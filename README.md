@@ -21,12 +21,28 @@ Both mechanisms coexist:
 
 | | Native `dsh-compaction-basic` | `nano-context` (this plugin) |
 |---|---|---|
-| Trigger | Deterministic (80% threshold, 65K headroom) | Model-driven (tool call) + nudge at 50% |
+| Trigger | Deterministic — **official default never fires on small windows** (headroom 65K ≥ window → pressureBudget ≤ 0 → `TargetPressureConfigError`); our deployment tunes it to **75%** | Model-driven (tool call) + nudge at **70%** (set below the native 75% so the model self-compresses first) |
 | Reversible | No (originals replaced permanently) | Yes (`decompress` restores originals) |
 | Searchable | No | Yes (`search_context`) |
 | Targeting | Uniform (retain newest 16%) | Model chooses what to compress |
 | Safety net | Yes (overflow recovery on CONTEXT_WINDOW_EXCEEDED) | No (depends on model remembering to call) |
 | `/compact` | Yes | No |
+
+**Trigger ordering (our deployment, 64K window):**
+
+```
+ 70% (45875 tok)  nano-context nudge → model decides what to compress
+ 75% (49152 tok)  native compaction  → deterministic cut (fallback)
+ ~100%            llama.cpp context overflow → session interrupted
+```
+
+The 5-percentage-point gap (default) gives the model ~3300 tokens of runway to
+self-compress before the native fallback fires. If the model compresses
+successfully at 70%, the token count drops below 75% and the native
+compaction never triggers. Do **not** set both to the same threshold —
+they would fire simultaneously, the native cut would interrupt a
+half-written model summary, and both mechanisms would compress
+redundantly.
 
 **Why both?** Native compaction covers the "model 跑偏 / forgets to call the tool"
 failure mode with a deterministic trigger. This plugin adds targeted, reversible,
@@ -46,8 +62,9 @@ compress. This plugin gives the model five tools:
 | `merge` | Merge two adjacent blocks into one (reduces block count, keeps combined summaries) |
 | `acp_status` | Report token usage, active blocks, per-block quality, total savings, and recent activity trail |
 
-The model is nudged to compress when context exceeds 50% of the limit (with a 10%
-cooldown between nudges). Compressed ranges are replaced with the model's summary
+The model is nudged to compress when context exceeds `nudgeThreshold` (default **0.7**,
+set below the native compaction's tuned 75% so the model self-compresses first) with a 10%
+cooldown between nudges. Compressed ranges are replaced with the model's summary
 in subsequent requests. Originals are preserved in-memory for decompression.
 
 ## Why "nano"
@@ -84,7 +101,7 @@ DSH agent loop
   │
   ├── agent/assistant-stream
   │     └── nano-context observer
-  │           └── Token usage > 50% → agent.steer(nudge text) [10% cooldown]
+  │           └── Token usage > nudgeThreshold (default 70%) → agent.steer(nudge) [10% cooldown]
   │
   └── Tool execution (compress / decompress / search_context / acp_status)
         └── nano-context engine (in-memory state per session, LRU 32)
@@ -106,7 +123,7 @@ DSH agent loop
 6. **Model merges**: Calls `merge` on two adjacent blocks to reduce block
    count. The surviving block keeps the lower id; summaries are concatenated
    (newer first, `---` separator).
-7. **Nudge**: When token usage exceeds 50%, a nudge is injected via `agent.steer()`.
+7. **Nudge**: When token usage exceeds `nudgeThreshold` (default 70%, below the native 75%), a nudge is injected via `agent.steer()`.
 8. **Overflow**: If context still overflows, native compaction fires as safety net.
 
 ## Robustness & safety
@@ -357,14 +374,14 @@ Add an `insert` entry to the profile's `cordis.patch.yml` (the bundle's own
       name: 'nano-context'
       config:
         contextLimit: 65536     # model context window in tokens (match your model!)
-        nudgeThreshold: 0.5     # nudge at 50% of context
+        nudgeThreshold: 0.7     # nudge at 70% (below native compaction's tuned 75%)
         maxBlocks: 50           # max active blocks (hard cap)
 ```
 
 | Config | Default | Description |
 |--------|---------|-------------|
 | `contextLimit` | 131072 | Model context window in tokens (used for nudge + status). **Must match your actual model window** — a limit larger than the window means the nudge never fires. |
-| `nudgeThreshold` | 0.5 | Fraction of contextLimit at which a nudge fires |
+| `nudgeThreshold` | 0.7 | Fraction of contextLimit at which a nudge fires. Default 0.7 sits below the native compaction's tuned 75% so the model self-compresses before the deterministic fallback. |
 | `maxBlocks` | 50 | Hard cap on active blocks; new compress refused at cap |
 
 ## Debug
@@ -418,6 +435,19 @@ so that `npm install` does not fail outside a DSH environment — but the plugin
 will not function without a running DSH instance providing these packages.
 
 ## Changelog
+
+### 0.4.2 (2026-11-01)
+
+- **Default `nudgeThreshold` 0.5 → 0.7**: the nudge now fires at 70% of
+  `contextLimit` by default, sitting below the native `dsh-compaction-basic`
+  tuned threshold (75% in our deployment) so the model self-compresses before
+  the deterministic fallback fires. The 5-percentage-point gap gives the model
+  ~3300 tokens of runway; if it compresses successfully at 70%, the token count
+  drops below 75% and native compaction never triggers.
+- **README**: documented the trigger ordering (70% nudge → 75% native → 100%
+  overflow) and the official-default-broken note for native compaction on small
+  windows (headroom 65K ≥ window → pressureBudget ≤ 0 → never fires).
+- **README**: added published links (npm + GitHub) and GitHub clone install.
 
 ### 0.4.1 (2026-11-01)
 
