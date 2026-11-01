@@ -1,0 +1,74 @@
+{
+  "name": "nano-context",
+  "version": "0.4.1",
+  "description": "Nano-scale in-process context compression for DSH. No proxy, no network, reversible. A minimal reimplementation of billion-context's model-driven compression for a single local DSH + llama.cpp deployment.",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./patch.yml": "./patch.yml",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "files": [
+    "index.js",
+    "engine.js",
+    "prompts.js",
+    "patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "dsh",
+    "context-compression",
+    "llm",
+    "llama.cpp",
+    "deepseek",
+    "token-savings",
+    "in-process",
+    "reversible",
+    "local",
+    "plugin"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "node --test test/engine.test.js test/index.test.js",
+    "prepublishOnly": "npm test"
+  },
+  "author": "quekenao",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quekenao/nano-context.git"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.0.5",
+    "@deepseek-ai/dsh-llm": ">=0.2.1-rc.5",
+    "@deepseek-ai/dsh-web-app": ">=0.2.1-rc.5",
+    "zod": "^4.6.7"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": { "optional": true },
+    "@deepseek-ai/dsh-llm": { "optional": true },
+    "@deepseek-ai/dsh-web-app": { "optional": true },
+    "zod": { "optional": true }
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./patch.yml"
+    },
+    "scope": {
+      "topology": "dsh + llama.cpp + local model",
+      "dshVersion": "0.2.1-rc.5",
+      "cordisVersion": "~4.0.5",
+      "surfaces": ["web"],
+      "clientSupported": false,
+      "note": "Validated only for the DSH 0.2.1-rc.5 web surface with a llama.cpp local-model backend. The client/CLI surface is NOT adapted and is out of scope."
+    }
+  }
+}

@@ -1,0 +1,23 @@
+# nano-context: activates the in-process context compression plugin
+# in the profile layer stack.
+#
+# In-process compression engine with model-driven compress/decompress/
+# search_context/acp_status tools. No proxy, no network, no auto-update.
+#
+# Config (optional, via the insert's config block):
+#   contextLimit   — model context window in tokens (default 131072)
+#   nudgeThreshold — fraction of contextLimit at which a nudge fires (default 0.5)
+#   maxBlocks      — max active compression blocks before new blocks are REFUSED (default 50)
+#
+# To tune for your model, extend the insert:
+#
+#   - insert:
+#       - id: nano-context
+#         name: 'nano-context'
+#         config:
+#           contextLimit: 65536
+#           nudgeThreshold: 0.6
+#
+- insert:
+    - id: nano-context
+      name: 'nano-context'
