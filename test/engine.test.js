@@ -308,13 +308,13 @@ describe("status", () => {
 
   test("buildStatus respects custom nudgeThreshold", () => {
     const state = createInitialState();
-    // Default 50%: warning line shows "50%"
+    // Default 70%: warning line shows "70%"
     const defaultStatus = buildStatus(state, 100000, 131072);
-    assert.ok(defaultStatus.includes("nudge threshold: 50%"));
+    assert.ok(defaultStatus.includes("nudge threshold: 70%"));
     // Custom 30%: warning line shows "30%"
     const customStatus = buildStatus(state, 100000, 131072, 0.3);
     assert.ok(customStatus.includes("nudge threshold: 30%"));
-    assert.ok(!customStatus.includes("50%"));
+    assert.ok(!customStatus.includes("70%"));
   });
 });
 
