@@ -1,6 +1,6 @@
 {
   "name": "@quekenao/nano-context",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Nano-scale in-process context compression for DSH. No proxy, no network, reversible. A minimal reimplementation of billion-context's model-driven compression for a single local DSH + llama.cpp deployment.",
   "type": "module",
   "main": "index.js",
