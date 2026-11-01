@@ -10,6 +10,8 @@
 
 Nano-scale in-process context compression for [DSH](https://github.com/deepseek-ai/deepseek-harness). No proxy, no network, reversible. A minimal reimplementation of [billion-context](https://github.com/ranxianglei/billion-context)'s model-driven compression, scoped to a single local DSH + llama.cpp deployment.
 
+**Published**: [npm `@quekenao/nano-context`](https://www.npmjs.com/package/@quekenao/nano-context) · [GitHub `quekenao/nano-context`](https://github.com/quekenao/nano-context)
+
 **In-process. Pure local. No proxy. No network egress. No auto-update. Complementary to native compaction.**
 
 ## Design: complementary, not replacement
@@ -314,6 +316,17 @@ Add the package to your profile's `package.json` and to its
 ```
 
 Then run `npm install` in the profile directory and restart `dsh web`.
+
+### GitHub (clone)
+
+```bash
+git clone https://github.com/quekenao/nano-context.git \
+  $DSH_HOME/profiles/<your-profile>/node_modules/nano-context
+```
+
+Then add `"nano-context"` to the profile's `dsh.profile.bundles` and add an
+`insert` entry to the profile's `cordis.patch.yml` (see [Configuration](#configuration)).
+Restart `dsh web` to activate.
 
 ### Local (symlink or copy)
 
