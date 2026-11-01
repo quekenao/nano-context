@@ -296,7 +296,7 @@ Add the package to your profile's `package.json` and to its
 ```json
 {
   "dependencies": {
-    "nano-context": "^0.4.1"
+    "@quekenao/nano-context": "^0.4.1"
   },
   "dsh": {
     "profile": {
