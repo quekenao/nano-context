@@ -834,10 +834,10 @@ export function searchContext(state, query) {
  * @param {object} state - CompressionState
  * @param {number} currentTokens - current context token count
  * @param {number} contextLimit - model context window in tokens
- * @param {number} [nudgeThreshold=0.5] - fraction of contextLimit that triggers a warning
+ * @param {number} [nudgeThreshold=0.7] - fraction of contextLimit that triggers a warning
  * @returns {string} formatted status
  */
-export function buildStatus(state, currentTokens, contextLimit, nudgeThreshold = 0.5) {
+export function buildStatus(state, currentTokens, contextLimit, nudgeThreshold = 0.7) {
   const blocks = activeBlocks(state);
   const tokenKnown = typeof currentTokens === "number" && currentTokens > 0;
   const pct = tokenKnown && contextLimit > 0 ? Math.round((currentTokens / contextLimit) * 100) : 0;

@@ -134,7 +134,7 @@ function estimateTokens(text) {
 // ---------------------------------------------------------------------------
 
 const DEFAULT_CONTEXT_LIMIT = 131072;
-const DEFAULT_NUDGE_THRESHOLD = 0.5;
+const DEFAULT_NUDGE_THRESHOLD = 0.7;
 const DEFAULT_MAX_BLOCKS = 50;
 // ---------------------------------------------------------------------------
 // Plugin entry

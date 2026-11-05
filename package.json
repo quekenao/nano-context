@@ -1,6 +1,6 @@
 {
   "name": "@quekenao/nano-context",
-  "version": "0.4.1",
+  "version": "0.4.3",
   "description": "Nano-scale in-process context compression for DSH. No proxy, no network, reversible. A minimal reimplementation of billion-context's model-driven compression for a single local DSH + llama.cpp deployment.",
   "type": "module",
   "main": "index.js",
@@ -47,7 +47,7 @@
     "url": "https://github.com/quekenao/nano-context.git"
   },
   "peerDependencies": {
-    "@deepseek-ai/cordis": "~4.0.5",
+    "@deepseek-ai/cordis": ">=4.0.5 <5",
     "@deepseek-ai/dsh-llm": ">=0.2.1-rc.5",
     "@deepseek-ai/dsh-web-app": ">=0.2.1-rc.5",
     "zod": "^4.6.7"
@@ -64,11 +64,12 @@
     },
     "scope": {
       "topology": "dsh + llama.cpp + local model",
-      "dshVersion": "0.2.1-rc.5",
-      "cordisVersion": "~4.0.5",
+      "dshVersion": ">=0.2.1-rc.5",
+      "cordisVersion": ">=4.0.5 <5",
       "surfaces": ["web"],
       "clientSupported": false,
-      "note": "Validated only for the DSH 0.2.1-rc.5 web surface with a llama.cpp local-model backend. The client/CLI surface is NOT adapted and is out of scope."
+      "testedWith": ["0.2.1-rc.5", "0.2.2-rc.1"],
+      "note": "Validated for DSH 0.2.1-rc.5 (cordis 4.0.5) and 0.2.2-rc.1 (cordis 4.1.0) web surfaces with a llama.cpp local-model backend. The client/CLI surface is NOT adapted and is out of scope."
     }
   }
 }
