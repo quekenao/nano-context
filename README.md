@@ -1,12 +1,12 @@
 # nano-context
 
 > **Scope**: This is a DSH (deepseek-harness) **Web-surface plugin**, validated
-> for DSH `0.2.1-rc.5` with a llama.cpp local-model backend. It is **not** a
-> generic npm package: it will not install or run outside a DSH runtime
-> (`dsh web`). The CLI/client surface is **not** supported. It is intended to
-> run at the **host level** (top-level `insert` in the profile's
-> `cordis.patch.yml`) so that it intercepts `llm/stream` for every session.
-> See [Scope / compatibility](#scope--compatibility) for the full matrix.
+> for DSH `0.2.1-rc.5`, `0.2.2-rc.1`, and `0.2.2-rc.2` with a llama.cpp
+> local-model backend. It is **not** a generic npm package: it will not install
+> or run outside a DSH runtime (`dsh web`). The CLI/client surface is **not**
+> supported. It is intended to run at the **host level** (top-level `insert` in
+> the profile's `cordis.patch.yml`) so that it intercepts `llm/stream` for every
+> session. See [Scope / compatibility](#scope--compatibility) for the full matrix.
 
 Nano-scale in-process context compression for [DSH](https://github.com/deepseek-ai/deepseek-harness). No proxy, no network, reversible. A minimal reimplementation of [billion-context](https://github.com/ranxianglei/billion-context)'s model-driven compression, scoped to a single local DSH + llama.cpp deployment.
 
@@ -405,7 +405,7 @@ DSH_NANO_CONTEXT_DEBUG=1 dsh web
 **This plugin is a DSH plugin. It does not work outside a DSH runtime.**
 
 - **Topology**: DSH + llama.cpp + local model
-- **Required DSH version**: 0.2.1-rc.5
+- **Compatible DSH versions**: 0.2.1-rc.5, 0.2.2-rc.1, 0.2.2-rc.2
 - **Required Cordis**: ~4.0.5
 - **Required dsh-llm**: >= 0.2.1-rc.5
 - **Required dsh-web-app**: >= 0.2.1-rc.5
@@ -416,7 +416,8 @@ DSH_NANO_CONTEXT_DEBUG=1 dsh web
 
 **Supported** (validated):
 
-- DSH **Web surface** (`dsh web`) on the `0.2.1-rc.5` release line.
+- DSH **Web surface** (`dsh web`) on the `0.2.1-rc.5`, `0.2.2-rc.1`, and
+  `0.2.2-rc.2` release lines.
 - **Local model backends**: llama.cpp serving a local model (any window size —
   set `contextLimit` to your model's window).
 - **Host-level installation**: the plugin is intended to run at the host level
@@ -433,8 +434,9 @@ DSH_NANO_CONTEXT_DEBUG=1 dsh web
   not been validated there.
 - **Other DSH versions** — the plugin depends on DSH-internal packages
   (`@deepseek-ai/cordis`, `@deepseek-ai/dsh-llm`,
-  `@deepseek-ai/dsh-web-app`) and the 0.2.1-rc.5 plugin contract. It may
-  break on newer or older releases.
+  `@deepseek-ai/dsh-web-app`) and the plugin contract introduced in
+  0.2.1-rc.5. It may break on releases older than 0.2.1-rc.5 or significantly
+  different from the 0.2.2 line.
 - **Multi-process / cluster deployments** — state is in-memory per process.
 
 The `@deepseek-ai/*` peer dependencies are DSH-internal packages resolved by the
@@ -443,6 +445,21 @@ so that `npm install` does not fail outside a DSH environment — but the plugin
 will not function without a running DSH instance providing these packages.
 
 ## Changelog
+
+### 0.4.4 (2026-11-13)
+
+- **DSH 0.2.2-rc.2 adaptation (zero code change)**: the 0.2.2-rc.2 `llm/stream`
+  interception surface, event stream and block-index conventions are unchanged
+  from 0.2.2-rc.1; the plugin code is untouched. `dsh.scope.testedWith` now
+  lists `0.2.2-rc.2`; the compatibility matrix in this README is updated to
+  match.
+
+### 0.4.3 (2026-11-05)
+
+- **DSH 0.2.2-rc.1 adaptation (zero code change)**: the 0.2.2-rc.1 release
+  line keeps the `llm/stream` interception surface intact; the plugin code is
+  untouched. `peerDependencies` ranges widened to `>=0.2.1-rc.5`;
+  `dsh.scope.testedWith` now lists `0.2.2-rc.1`.
 
 ### 0.4.2 (2026-11-01)
 

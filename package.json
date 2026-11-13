@@ -1,6 +1,6 @@
 {
   "name": "@quekenao/nano-context",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Nano-scale in-process context compression for DSH. No proxy, no network, reversible. A minimal reimplementation of billion-context's model-driven compression for a single local DSH + llama.cpp deployment.",
   "type": "module",
   "main": "index.js",
@@ -68,8 +68,8 @@
       "cordisVersion": ">=4.0.5 <5",
       "surfaces": ["web"],
       "clientSupported": false,
-      "testedWith": ["0.2.1-rc.5", "0.2.2-rc.1"],
-      "note": "Validated for DSH 0.2.1-rc.5 (cordis 4.0.5) and 0.2.2-rc.1 (cordis 4.1.0) web surfaces with a llama.cpp local-model backend. The client/CLI surface is NOT adapted and is out of scope."
+      "testedWith": ["0.2.1-rc.5", "0.2.2-rc.1", "0.2.2-rc.2"],
+      "note": "Validated for DSH 0.2.1-rc.5 (cordis 4.0.5), 0.2.2-rc.1 (cordis 4.1.0) and 0.2.2-rc.2 web surfaces with a llama.cpp local-model backend. The client/CLI surface is NOT adapted and is out of scope."
     }
   }
 }
